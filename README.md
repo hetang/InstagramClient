@@ -8,6 +8,7 @@ Completed user stories:
  * [x] User can scroll through current popular photos from Instagram
  * [x] For each photo displayed, user can see the following details:
       * Graphic, Caption, Username
+      * (Optional) like count, user profile image
  * [x] Advanced: Add pull-to-refresh for popular stream with SwipeRefreshLayout
  * [x] Advanced: Display each user profile image using a RoundedImageView
  * [x] Advanced: Display a nice default placeholder graphic for each image during loading
