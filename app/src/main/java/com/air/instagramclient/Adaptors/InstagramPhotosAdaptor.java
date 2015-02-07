@@ -42,7 +42,6 @@ public class InstagramPhotosAdaptor extends ArrayAdapter<InstagramPhotoModel>{
         ViewHolder viewHolder;
         if(convertView == null) {
             viewHolder = new ViewHolder();
-            Typeface fontMagnificent = Typeface.createFromAsset(getContext().getAssets(), "fonts/Magnificent.ttf");
             Typeface fontRingm = Typeface.createFromAsset(getContext().getAssets(), "fonts/RINGM.ttf");
 
             Drawable dr = getContext().getResources().getDrawable(R.drawable.heart1);
@@ -59,7 +58,7 @@ public class InstagramPhotosAdaptor extends ArrayAdapter<InstagramPhotoModel>{
 
             viewHolder.imgVwPhoto = (ImageView) convertView.findViewById(R.id.imgVwPhoto);
             viewHolder.txtVwCaption = (TextView) convertView.findViewById(R.id.txtVwCaption);
-            viewHolder.txtVwCaption.setTypeface(fontMagnificent);
+            viewHolder.txtVwCaption.setTypeface(fontRingm);
             viewHolder.txtVwLikes = (TextView) convertView.findViewById(R.id.txtVwLikes);
             viewHolder.txtVwLikes.setTypeface(fontRingm);
             viewHolder.txtVwLikes.setCompoundDrawables( d, null, null, null );
