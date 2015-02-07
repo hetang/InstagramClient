@@ -14,6 +14,7 @@ Completed user stories:
  * [x] Advanced: Display a nice default placeholder graphic for each image during loading
 
 Walkthrough of all user stories:
+
 ![Video Walkthrough](InstagramClient.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
