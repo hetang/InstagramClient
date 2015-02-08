@@ -16,6 +16,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by hetashah on 2/6/15.
@@ -53,11 +56,12 @@ public class URLDataBuilder {
                         if(ApplicationHelpers.isNotEmpty(listPosts)) {
                             for (int i = 0; i < listPosts.length(); i++) {
                                 JSONObject post = listPosts.getJSONObject(i);
+                                Log.i("DEBUG", " i = " + i + " post = " + post);
                                 if(post != null && ApplicationHelpers.isSupportType(post.getString("type"))) {
                                     InstagramPhotoModel model = new InstagramPhotoModel();
                                     model.setId(post.getString("id"));
 
-                                    if(post.has("caption")) {
+                                    if(post.has("caption") && !post.isNull("caption")) {
                                         JSONObject caption = post.getJSONObject("caption");
 
                                         if (caption != null) {
@@ -93,7 +97,34 @@ public class URLDataBuilder {
                                             model.setUser(userModel);
                                         }
                                     }
+                                    if(post.has("created_time")) {
+                                        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+                                        long currentMillisecond = cal.getTimeInMillis();
+                                        long postedMillisecond = currentMillisecond;
+                                        try{
+                                            String time = post.getString("created_time");
+                                            if(!ApplicationHelpers.isEmpty(time)) {
+                                                postedMillisecond  = Long.parseLong(time);
+                                            }
+                                        } catch(Exception e) {
 
+                                        }
+
+                                        long diff = currentMillisecond - postedMillisecond;
+                                        int seconds = (int) (diff / 1000) % 60 ;
+                                        int minutes = (int) ((diff / (1000*60)) % 60);
+                                        int hours   = (int) ((diff / (1000*60*60)) % 24);
+                                        StringBuilder time = new StringBuilder();
+                                        if(hours > 0) {
+                                            time.append(hours).append("h").append(" ago");
+                                        } else if(minutes > 0) {
+                                            time.append(hours).append("m").append(" ago");
+                                        } else if(seconds > 0) {
+                                            time.append(hours).append("s").append(" ago");
+                                        }
+
+                                        model.setTime(time.toString());
+                                    }
                                     photos.add(model);
                                 }
                             }

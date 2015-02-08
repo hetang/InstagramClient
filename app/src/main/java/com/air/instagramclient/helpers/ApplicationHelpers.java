@@ -14,6 +14,10 @@ public class ApplicationHelpers {
         return !(photos != null && photos.isEmpty());
     }
 
+    public static boolean isEmpty(String str) {
+        return str == null || "".equalsIgnoreCase(str);
+    }
+
     public enum SUPPORTED_TYPE {
         IMAGE
     }

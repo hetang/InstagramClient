@@ -2,6 +2,7 @@ package com.air.instagramclient.Adaptors;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,9 +15,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.air.instagramclient.R;
+import com.air.instagramclient.helpers.RoundedTransform;
 import com.air.instagramclient.models.InstagramPhotoModel;
 import com.air.instagramclient.models.UserModel;
+import com.makeramen.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 import java.util.zip.Inflater;
@@ -28,8 +32,11 @@ public class InstagramPhotosAdaptor extends ArrayAdapter<InstagramPhotoModel>{
 
     private static class ViewHolder{
         ImageView imgVwPhoto;
+        ImageView imgVwProfile;
         TextView txtVwCaption;
         TextView txtVwLikes;
+        TextView txtVwUserName;
+        TextView txtVwTime;
     }
 
     public InstagramPhotosAdaptor(Context context, List<InstagramPhotoModel> objects) {
@@ -57,12 +64,15 @@ public class InstagramPhotosAdaptor extends ArrayAdapter<InstagramPhotoModel>{
                                                                     parent, false);
 
             viewHolder.imgVwPhoto = (ImageView) convertView.findViewById(R.id.imgVwPhoto);
+            viewHolder.imgVwProfile = (ImageView) convertView.findViewById(R.id.imgVwProfile);
             viewHolder.txtVwCaption = (TextView) convertView.findViewById(R.id.txtVwCaption);
             viewHolder.txtVwCaption.setTypeface(fontRingm);
             viewHolder.txtVwLikes = (TextView) convertView.findViewById(R.id.txtVwLikes);
             viewHolder.txtVwLikes.setTypeface(fontRingm);
-            viewHolder.txtVwLikes.setCompoundDrawables( d, null, null, null );
+            viewHolder.txtVwLikes.setCompoundDrawables(d, null, null, null);
             viewHolder.txtVwLikes.setCompoundDrawablePadding(10);
+            viewHolder.txtVwUserName = (TextView) convertView.findViewById(R.id.txtVwUserName);
+            viewHolder.txtVwTime = (TextView) convertView.findViewById(R.id.txtVwTime);
 
             convertView.setTag(viewHolder);
         } else {
@@ -71,14 +81,24 @@ public class InstagramPhotosAdaptor extends ArrayAdapter<InstagramPhotoModel>{
         StringBuilder userName = new StringBuilder();
         UserModel user = model.getUser();
         if(user != null) {
-            userName.append("<b>").append(model.getUser().getName()).append("</b> ");
+            userName.append("<b>").append(user.getName()).append("</b> ");
+            viewHolder.txtVwUserName.setText(user.getName());
+
+            Picasso.with(getContext())
+                    .load(user.getProfileImgURL())
+                    .fit()
+                    .transform(new RoundedTransform())
+                    .placeholder(R.drawable.default_user)
+                    .error(R.drawable.default_user)
+                    .into(viewHolder.imgVwProfile);
         }
         userName.append(model.getCaption());
 
         viewHolder.txtVwCaption.setText(Html.fromHtml(userName.toString()));
         viewHolder.txtVwLikes.setText(Html.fromHtml("<b>" + model.getLikes() + "</b> " + getContext().getResources().getString(R.string.likes_string)));
-
+        viewHolder.txtVwTime.setText(model.getTime());
         viewHolder.imgVwPhoto.setImageResource(0);
+
         Picasso.with(getContext()).load(model.getImageURL()).fit().centerCrop().placeholder(R.drawable.loading1).into(viewHolder.imgVwPhoto);
 
         return convertView;

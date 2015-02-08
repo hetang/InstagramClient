@@ -9,6 +9,15 @@ public class InstagramPhotoModel {
     private String caption;
     private String imageURL;
     private int likes;
+    private String time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getId() {
         return id;
