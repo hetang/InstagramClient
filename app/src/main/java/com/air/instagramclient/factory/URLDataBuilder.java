@@ -1,9 +1,14 @@
 package com.air.instagramclient.factory;
 
+import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Html;
 import android.util.Log;
 
+import com.air.instagramclient.Adaptors.CommentsDialog;
 import com.air.instagramclient.Adaptors.InstagramPhotosAdaptor;
+import com.air.instagramclient.activity.PhotosActivity;
 import com.air.instagramclient.helpers.ApplicationHelpers;
 import com.air.instagramclient.models.InstagramPhotoModel;
 import com.air.instagramclient.models.UserModel;
@@ -28,8 +33,10 @@ public class URLDataBuilder {
     private ArrayList<InstagramPhotoModel> photos;
     private InstagramPhotosAdaptor adaptor;
     private SwipeRefreshLayout swipeContainer;
+    private PhotosActivity photosActivity;
 
-    public URLDataBuilder(ArrayList<InstagramPhotoModel> photos, InstagramPhotosAdaptor adaptor, SwipeRefreshLayout swipeContainer) {
+    public URLDataBuilder(PhotosActivity photosActivity, ArrayList<InstagramPhotoModel> photos, InstagramPhotosAdaptor adaptor, SwipeRefreshLayout swipeContainer) {
+        this.photosActivity = photosActivity;
         this.photos = photos;
         this.adaptor = adaptor;
         this.swipeContainer = swipeContainer;
@@ -145,6 +152,44 @@ public class URLDataBuilder {
 
                 } else {
                     Log.i("DEBUG", "No Response Received");
+                }
+            }
+        });
+    }
+
+    public void fetchComments(String mediaId) {
+        String url = "https://api.instagram.com/v1/media/" + mediaId + "?client_id=" + CLIENT_ID;
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(url, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //DO NOTHING
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if(response != null) {
+                    Log.i("DEBUG", "Response from API ==> " + response.toString());
+                    try {
+                        ArrayList<CharSequence> comments = new ArrayList<CharSequence>();
+                        JSONObject data = response.getJSONObject("data");
+                        JSONObject commentsData = data.getJSONObject("comments");
+                        JSONArray commentsList = commentsData.getJSONArray("data");
+                        if(ApplicationHelpers.isNotEmpty(commentsList)) {
+                            for (int i = 0; i < commentsList.length(); i++) {
+                                JSONObject commentData = commentsList.getJSONObject(i);
+                                JSONObject commentFrom = commentData.getJSONObject("from");
+                                StringBuilder comment = new StringBuilder();
+                                comment.append("<b>").append(commentFrom.getString("username")).append("</b> ")
+                                        .append(commentData.getString("text"));
+                                comments.add(Html.fromHtml(comment.toString()));
+                            }
+                            Log.i("DEBUG", "Comments Models ==> " + comments.toString());
+                            photosActivity.showDialogComments(comments);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

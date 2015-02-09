@@ -9,9 +9,9 @@ public class UserModel {
     private String id;
     private String fullName;
 
-    /*public String toString() {
+    public String toString() {
         return "[ id = " + id + " name = " + name + " fullName = " + fullName + " profileImgURL = " + profileImgURL + " ]";
-    }*/
+    }
 
     public String getName() {
         return name;

@@ -59,7 +59,7 @@ public class InstagramPhotoModel {
         this.likes = likes;
     }
 
-    /*public String toString() {
+    public String toString() {
         return "id = " + id + " caption = " + caption + " imageURL = " + imageURL + " likes = " + likes + " user = " + user;
-    }*/
+    }
 }
